@@ -1,5 +1,7 @@
 body{
-  --slack-color: #3f0f40;
+  --digiHQ-color: #3f0f40;
+  --digiHQ-color2: #190b55;
+  --digiHQ-color2-light: #173658;
   overflow: hidden;
 }
 

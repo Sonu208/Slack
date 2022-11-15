@@ -3,7 +3,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px 0;
-    background-color: var(--slack-color);
+    background-color: var(--digiHQ-color2);
     color: white;
 }
 
@@ -21,7 +21,7 @@
 
 .header-search{
     flex: 0.4;
-    background-color: #421f44;
+    background-color: var(--digiHQ-color2-light);
     text-align: center;
     display: flex;
     padding: 0 50px;

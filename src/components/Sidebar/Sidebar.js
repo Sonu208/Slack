@@ -13,13 +13,30 @@ import AppsIcon from "@material-ui/icons/Apps";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import AddIcon from "@material-ui/icons/Add";
+import { Button } from "@mui/material";
+import ClearIcon from '@mui/icons-material/Clear';
 import LoopIcon from "@material-ui/icons/Loop";
 import db from "../../firebase";
 import { useStateValue } from "../../StateProvider";
+import { SelectWorkspace } from "./Workspace/selectWorkspace";
+import { CreateWorkspace } from "./Workspace/createWorkspace";
 
 function Sidebar() {
   const [channels, setChannels] = useState([]);
   const [{ user }] = useStateValue();
+
+  const [showChannels, setShowChannels] = useState(false);
+  const [showmore, setShowmore] = useState(false);
+  const [selectWorkspace, setSelectWorkspace] = useState(false);
+  const [createWorkspace, setCreateWorkspace] = useState(false);
+
+  const handleSelectWorkspace = (bool) => {
+    setSelectWorkspace(bool);
+  };
+
+  const handleCreateWorkspace = (bool) => {
+    setCreateWorkspace(bool);
+  };
 
   useEffect(() => {
     db.collection("rooms").onSnapshot((snapshot) => {
@@ -36,30 +53,78 @@ function Sidebar() {
     <div className="sidebar">
       <div className="siderbar-header">
         <div className="sidebar-info">
-          <h2>Geliştiren Kafalar</h2>
+          <div>
+            <h2>Workflow name</h2>
+         
+          </div>
           <h3>
             <FiberManualRecordIcon />
             {user?.displayName}
           </h3>
         </div>
-        <CreateIcon />
+        {selectWorkspace && <SelectWorkspace setselectworkspace={handleSelectWorkspace} setcreateworkspace={handleCreateWorkspace}/>}
+        {createWorkspace && <CreateWorkspace setselectworkspace={handleSelectWorkspace} setcreateworkspace={handleCreateWorkspace}/>}
+        <Button onClick={()=>{
+          setSelectWorkspace(true);
+        }}>
+          <CreateIcon />
+        </Button>
       </div>
-      <SidebarOption Icon={InsertCommentIcon} title="Threads" />
-      <SidebarOption Icon={InboxIcon} title="Metions & reactions" />
-      <SidebarOption Icon={DraftsIcon} title="Saved items" />
-      <SidebarOption Icon={BookmarkBorderIcon} title="Channel browser" />
-      <SidebarOption Icon={FileCopyIcon} title="File browser" />
-      <SidebarOption Icon={PeopleAltIcon} title="People & user groups" />
-      <SidebarOption Icon={AppsIcon} title="Apps" />
-      <SidebarOption Icon={ExpandLessIcon} title="Show less" />
+      {showmore ? (
+        <div> 
+          <SidebarOption Icon={InboxIcon} title="Metions & reactions" />
+          <div
+            onClick={()=>{
+              setShowmore(false)
+            }} 
+          >
+            <SidebarOption Icon={ExpandMoreIcon} title="Show mess" />
+          </div>
+        </div>
+      ) : (
+        <div>
+          {/* <SidebarOption Icon={InsertCommentIcon} title="Threads" /> */}
+          <SidebarOption Icon={InboxIcon} title="Metions & reactions" />
+          {/* <SidebarOption Icon={DraftsIcon} title="Saved items" /> */}
+          <SidebarOption Icon={BookmarkBorderIcon} title="Channel browser" />
+          {/* <SidebarOption Icon={FileCopyIcon} title="File browser" /> */}
+          <SidebarOption Icon={PeopleAltIcon} title="People & user groups" />
+          {/* <SidebarOption Icon={AppsIcon} title="Apps" /> */}
+          <div
+            onClick={()=>{
+              setShowmore(true)
+            }} 
+          >
+            <SidebarOption Icon={ExpandLessIcon} title="Show less" />
+          </div>
+        </div>
+
+      )}
+      
       <hr />
-      <SidebarOption Icon={ExpandMoreIcon} title="Channels" />
+      {showChannels ? (
+        <div
+        onClick={()=>{
+          setShowChannels(false)
+        }} 
+      >
+        <SidebarOption Icon={ExpandLessIcon} title="Channels" />
+      </div>
+      ):(
+        <div
+            onClick={()=>{
+              setShowChannels(true)
+            }} 
+          >
+            <SidebarOption Icon={ExpandMoreIcon} title="Channels" />
+          </div>
+      )}
       <hr />
       <SidebarOption Icon={AddIcon} addChannelOption title="Add Channel" />
 
       {/* Connect to db and list all the channels*/}
       {/* SidebarOptionn */}
-      {channels.map((channel) => (
+      {showChannels && channels.map((channel) => (
         <SidebarOption title={channel.name} id={channel.id} />
       ))}
     </div>

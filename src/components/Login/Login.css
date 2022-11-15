@@ -6,7 +6,9 @@
 }
 
 .login-container {
-	padding: 100px;
+	height: 80%;
+	width: 40%;
+	padding: 30px;
 	background-color: white;
 	text-align: center;
 	border-radius: 10px;
@@ -15,7 +17,7 @@
 
 .login-container > img {
 	object-fit: contain;
-	width: 100px;
+	width: 140px;
 }
 
 .login-container > h1 {
@@ -32,6 +34,37 @@
 .login-container > button:hover {
 	background-color: darkgreen;
 }
+
+.switchForm{
+	/* position: relative; */
+	display: block;
+	width: 100%;
+	text-align: right;
+	/* margin-left: 83px;
+    margin-top: -12px; */
+}
+
+.sign-btn{
+	margin-top: 20px;
+	text-transform: inherit;
+	width: 160px;
+}
+
+.logo{
+	height: 140px;
+	width: 140px;
+}
+
+.formContainer{
+	margin-top: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	height: 70%;
+	align-items: center;
+}
+
+
 
 @media only screen and (max-width: 600px) {
    
