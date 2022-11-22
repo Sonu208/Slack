@@ -1,12 +1,12 @@
 import React from "react";
-
 import "./App.css";
 import Header from "./components/Header/Header";
 import Sidebar from "./components/Sidebar/Sidebar";
 import Chat from "./components/Chat/Chat";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useStateValue } from "./StateProvider";
-import Login from "./components/Login/Login";
+import Login from "./components/Login/Login"; 
+import PersonalProfile from "./components/Profile/Profile.js";
 
 function App() {
   const [{ user }, dispatch] = useStateValue();
