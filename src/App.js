@@ -10,11 +10,12 @@ import Login from "./components/Login/Login";
 
 function App() {
   const [{ user }, dispatch] = useStateValue();
+  const userDetails = localStorage.getItem('login')
 
   return (
     <div className="App">
       <Router>
-        {!user ? (
+        {!userDetails ? (
           <Login />
         ) : (
           <>

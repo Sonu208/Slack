@@ -1,5 +1,6 @@
 import React from "react";
 import "./Login.css";
+import axios from "axios";
 // import { Button } from "@material-ui/core";
 import { auth, provider } from "../../firebase";
 import { useStateValue } from "../../StateProvider";
@@ -9,20 +10,129 @@ import TextField from '@mui/material/TextField';
 import { Button } from "@mui/material";
 import logo2 from "../../static/image/logo2.png";
 import { nameValidation, passwordValidation, emailValidation } from "./validation";
+import profile1 from "../../static/image/profile1.png";
+import profile2 from "../../static/image/profile2.png";
+import profile3 from "../../static/image/profile3.png";
+import profile4 from "../../static/image/profile4.png";
+import profile5 from "../../static/image/profile5.png";
 
 function Login() {
   const [state, dispatch] = useStateValue();
   const [isSignIn, setIsSignIn] = useState(false);
+
+  const [signInError, setIsSignInError] = useState('');
+  const [signUpError, setIsSignUpError] = useState('');
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
+  const [username, setUsername] = useState("");
 
   const [fnameError, setFnameError] = useState("");
   const [lnameError, setLnameError] = useState("");
+  const [usernameError, setUsernameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [cpasswordError, setCpasswordError] = useState("");
+
+  const manualSignIn = (e) => {
+    axios({
+      method: 'get',
+      url: 'https://slack-clone2022.herokuapp.com/user/',
+
+      data: {
+        username: username,
+        email: email,
+        password: password,
+      },
+
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          console.log('Signed Up Successfully !');
+          alert('Signed Up Successfully !');
+          localStorage.setItem(
+            'login',
+            JSON.stringify({
+              login: true,
+              id: res.data.userInfo._id, //user ID
+              user: res.data.userInfo.email, //email
+              userName: username, //Name
+              fname: fname,
+              lname: lname,
+              // profileImage: profileImg, //Prof Img
+              login_type: 0,
+              user_type: "employee",
+              role: "backend"
+            })
+          );
+        }
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  }
+
+  const manualSignUp = (e) => {
+    const r = Math.random() * (6 - 1) + 1;
+    const profileImg = r < 2 ? profile1 : r < 3 ? profile2 : r < 4 ? profile3 : r < 5 ? profile4 : profile5;
+    var profileString = '';
+    let reader = new FileReader();
+    reader.onloadend = function() {
+      profileString = reader.result;
+    }
+    reader.readAsDataURL(profileImg);
+    axios({
+      method: 'post',
+      url: 'https://slack-clone2022.herokuapp.com/user/',
+
+      data: {
+        username: username,
+        first_name: fname,
+        last_name: lname,
+        email: email,
+        profile: profileString,
+        password: password,
+        login_type: 0,
+        user_type: "employee",
+        role: "backend"
+      },
+
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          console.log('Signed Up Successfully !');
+          alert('Signed Up Successfully !');
+          localStorage.setItem(
+            'login',
+            JSON.stringify({
+              login: true,
+              id: res.data.userInfo._id, //user ID
+              email: res.data.userInfo.email, //email
+              userName: username, //Name
+              fname: fname,
+              lname: lname,
+              profileImage: profileImg, //Prof Img
+              login_type: 0,
+              user_type: "employee",
+              role: "backend"
+            })
+          );
+        }
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  }
 
   const signIn = () => {
     auth
@@ -33,6 +143,41 @@ function Login() {
           type: actionTypes.SET_USER,
           user: result.user,
         });
+        localStorage.setItem(
+          'login',
+          JSON.stringify({
+            login: true,
+            id: result.additionalUserInfo.profile.id, //user ID
+            email: result.additionalUserInfo.profile.email, //email
+            userName: result.additionalUserInfo.profile.email.split('@')[0], //Name
+            fname: result.additionalUserInfo.profile.given_name,
+            lname: result.additionalUserInfo.profile.family_name,
+            profileImage: result.additionalUserInfo.profile.picture, //Prof Img
+            login_type: 1,
+            user_type: "employee",
+            role: "backend"
+            
+          }))
+          // axios({
+          //   method: 'post',
+          //   url: 'https://slack-clone2022.herokuapp.com/user/',
+      
+          //   data: {
+          //     username: result.additionalUserInfo.profile.email.split('@')[0],
+          //     fname: result.additionalUserInfo.profile.given_name,
+          //     lname: result.additionalUserInfo.profile.family_name,
+          //     email: result.additionalUserInfo.profile.email,
+          //     profileImage: result.additionalUserInfo.profile.picture, //Prof Img
+          //     login_type: 1,
+          //     user_type: "employee",
+          //     role: "backend",
+          //     password:''
+          //   },
+      
+          //   headers: {
+          //     'Content-Type': 'application/json',
+          //   },
+          // }).catch().then((res)=>{})
       })
       .catch((error) => alert(error.message));
   };
@@ -67,7 +212,7 @@ function Login() {
         
         <img className="logo"  src={logo2} alt="dd" />
         
-        <div className="form">
+        <div className="form" >
           {isSignIn ? (
             <form className="formContainer">
               <TextField
@@ -87,11 +232,11 @@ function Login() {
                 size="small"
               />
                 
-                <Button className="sign-btn" type="submit" variant="outlined" >Sign In</Button>
+                <Button className="sign-btn" type="submit" variant="outlined" onClick={manualSignIn} >Sign In</Button>
             </form>
           ):(
 
-            <form className="formContainer">
+            <form className="formContainer" >
               
               <TextField
                 required
@@ -107,7 +252,7 @@ function Login() {
 
                 onBlur = {(event) => {
                     const res = nameValidation(fname);
-                    if (res!=""){
+                    if (res!==""){
                       setFnameError(res);
                     }
                     else{
@@ -131,7 +276,7 @@ function Login() {
                 }}
                 onBlur = {(event) => {
                   const res = nameValidation(lname);
-                  if (res!=""){
+                  if (res!==""){
                     setLnameError(res);
                   }
                   else{
@@ -144,6 +289,26 @@ function Login() {
               <TextField
                 required
                 id="outlined-required"
+                label="Username"
+                type="text"
+                style={{marginBottom: "10px", width: "90%"}}
+                size="small"
+                onChange={(e) => setUsername(e.target.value)}
+                onBlur = {(event) => {
+                  const res = nameValidation(lname);
+                  if (res!==""){
+                    setUsernameError(res);
+                  }
+                  else{
+                    setUsernameError('');
+                  }
+                }}
+                error={usernameError!==''}
+                helperText = {usernameError}
+              />
+              <TextField
+                required
+                id="outlined-required"
                 label="Email"
                 type="email"
                 style={{marginBottom: "10px", width: "90%"}}
@@ -151,7 +316,7 @@ function Login() {
                 onChange={(e) => setEmail(e.target.value)}
                 onBlur = {(event) => {
                   const res = emailValidation(email);
-                  if (res!=""){
+                  if (res!==""){
                     setEmailError(res);
                   }
                   else{
@@ -172,7 +337,7 @@ function Login() {
 
                 onBlur = {(event) => {
                   const res = passwordValidation(password);
-                  if (res!=""){
+                  if (res!==""){
                     setPasswordError(res);
                   }
                   else{
@@ -191,7 +356,7 @@ function Login() {
                 style={{marginBottom: "10px", width: "90%"}}
                 size="small"
                 onChange = {(event) => {
-                  if(event.target.value != password){
+                  if(event.target.value !== password){
                     setCpasswordError("Password does not match");
                   }
                   else{
@@ -202,7 +367,9 @@ function Login() {
                 helperText = {cpasswordError}
               />
               
-              <Button className="sign-btn" type="submit" variant="outlined" >Sign Up</Button>
+              <Button className="sign-btn" type="submit" variant="outlined" onClick={manualSignUp}
+              disabled={fnameError!=='' || lnameError!=='' || emailError!=='' || passwordError!=='' || cpasswordError!=='' || fname==='' || lname==='' || email==='' || password==='' || username==='' || usernameError!==''}
+               >Sign Up</Button>
             </form>
             
 

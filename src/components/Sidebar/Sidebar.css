@@ -5,6 +5,7 @@
     color: white;
     flex: 0.3;
     overflow-y: auto;
+    padding-bottom: 20px;
 }
 
 ::-webkit-scrollbar {

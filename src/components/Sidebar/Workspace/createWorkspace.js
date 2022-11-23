@@ -2,7 +2,6 @@ import React from "react"
 import "./workspace.css"
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { Button } from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
 
