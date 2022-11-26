@@ -4,12 +4,41 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { Button } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import TextField from '@mui/material/TextField';
+import axios from "axios";
 
 export const CreateWorkspace = ({setselectworkspace, setcreateworkspace}) => {
 
     const [name, setName] = React.useState("");
     const [description, setDescription] = React.useState("");
+
+    const submitCreateWorkspace = ()=>{
+        const userData = localStorage.getItem('login');
+
+        const data = {
+            wname: name,
+            desc: description,
+            uid: userData.id
+        }
+        axios({
+            method: 'post',
+            url: 'https://slack-clone2022.herokuapp.com/workspace/',
+            data: data,
     
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+            .then((res) => {
+              console.log(res);
+              if (res.status === 200) {
+                console.log("Workspace created");
+                setcreateworkspace(false);
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+    }
 
     return(
         <React.Fragment>
@@ -52,7 +81,7 @@ export const CreateWorkspace = ({setselectworkspace, setcreateworkspace}) => {
                         }}
                         
                     />
-                    <Button  variant="contained" color="success" >Create</Button>
+                    <Button  variant="contained" color="success" onClick={submitCreateWorkspace} >Create</Button>
                     </div>
                     
                     <div>

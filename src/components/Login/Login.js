@@ -22,6 +22,7 @@ function Login() {
 
   const [signInError, setIsSignInError] = useState('');
   const [signUpError, setIsSignUpError] = useState('');
+  const [formError, setFormError] = useState('');
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,12 +38,12 @@ function Login() {
   const [cpasswordError, setCpasswordError] = useState("");
 
   const manualSignIn = (e) => {
+    e.preventDefault();
     axios({
-      method: 'get',
-      url: 'https://slack-clone2022.herokuapp.com/user/',
+      method: 'post',
+      url: 'https://slack-clone2022.herokuapp.com/user/login',
 
       data: {
-        username: username,
         email: email,
         password: password,
       },
@@ -54,39 +55,43 @@ function Login() {
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
-          console.log('Signed Up Successfully !');
-          alert('Signed Up Successfully !');
+          console.log('Logged in Successfully !');
+          // alert('Signed Up Successfully !');
           localStorage.setItem(
             'login',
             JSON.stringify({
               login: true,
-              id: res.data.userInfo._id, //user ID
-              user: res.data.userInfo.email, //email
-              userName: username, //Name
-              fname: fname,
-              lname: lname,
-              // profileImage: profileImg, //Prof Img
-              login_type: 0,
-              user_type: "employee",
-              role: "backend"
+              id: res.data.uid, //user ID
+              user: email, //email
+
+              userName: res.data.username, //Name
+              fname: res.data.first_name,
+              lname: res.data.last_name,
+              profileImage: res.data.profile, //Prof Img
+              login_type: res.data.login_type,
+              user_type: res.data.user_type,
+              role: res.data.role
             })
           );
         }
       })
       .catch((err) => {
         console.log(err.message);
+        setFormError(err.message);
       });
   }
 
   const manualSignUp = (e) => {
+    e.preventDefault();
     const r = Math.random() * (6 - 1) + 1;
     const profileImg = r < 2 ? profile1 : r < 3 ? profile2 : r < 4 ? profile3 : r < 5 ? profile4 : profile5;
+
     var profileString = '';
-    let reader = new FileReader();
-    reader.onloadend = function() {
-      profileString = reader.result;
-    }
-    reader.readAsDataURL(profileImg);
+    // let reader = new FileReader();
+    // reader.onloadend = function() {
+    //   profileString = reader.result;
+    // }
+    // reader.readAsDataURL(profileImg);
     axios({
       method: 'post',
       url: 'https://slack-clone2022.herokuapp.com/user/',
@@ -96,7 +101,7 @@ function Login() {
         first_name: fname,
         last_name: lname,
         email: email,
-        profile: profileString,
+        profile: profileImg,
         password: password,
         login_type: 0,
         user_type: "employee",
@@ -131,6 +136,7 @@ function Login() {
       })
       .catch((err) => {
         console.log(err.message);
+        setFormError(err.message);
       });
   }
 
@@ -179,7 +185,11 @@ function Login() {
           //   },
           // }).catch().then((res)=>{})
       })
-      .catch((error) => alert(error.message));
+      .catch((error) => {
+        console.log(error.message);
+        setFormError(error.message);
+      });
+      
   };
 
   return (
@@ -195,6 +205,7 @@ function Login() {
               setPassword("");
               setFname("");
               setLname("");
+              setFormError("");
             }}>Sign Up</Button>
           </span>
         ):(
@@ -206,6 +217,7 @@ function Login() {
               setPassword("");
               setFname("");
               setLname("");
+              setFormError("");
             }}>Sign In</Button>
           </span>
         )}
@@ -222,6 +234,7 @@ function Login() {
                 type="email"
                 style={{marginBottom: "10px", width: "90%"}}
                 size="small"
+                onChange={(e) => setEmail(e.target.value)}
               />
               <TextField
                 required
@@ -230,7 +243,10 @@ function Login() {
                 type="password"
                 style={{marginBottom: "10px", width: "90%"}}
                 size="small"
+                onChange={(e) => setPassword(e.target.value)}
               />
+              {formError ? <p className="error">{formError}</p> : null}
+              <br></br>
                 
                 <Button className="sign-btn" type="submit" variant="outlined" onClick={manualSignIn} >Sign In</Button>
             </form>
@@ -366,7 +382,8 @@ function Login() {
                 error={cpasswordError!==''}
                 helperText = {cpasswordError}
               />
-              
+              {formError ? <p className="error">{formError}</p> : null}
+              <br></br>
               <Button className="sign-btn" type="submit" variant="outlined" onClick={manualSignUp}
               disabled={fnameError!=='' || lnameError!=='' || emailError!=='' || passwordError!=='' || cpasswordError!=='' || fname==='' || lname==='' || email==='' || password==='' || username==='' || usernameError!==''}
                >Sign Up</Button>

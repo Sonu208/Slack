@@ -67,6 +67,10 @@
 	height: 70%;
 	align-items: center;
 }
+.error{
+	color: red;
+	font-size: small;
+}
 
 
 

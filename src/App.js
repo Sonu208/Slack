@@ -30,8 +30,7 @@ function App() {
                   <div className="information">
                     <h4>Welcome!</h4>
                     <p>
-                      You can add new channels and send realtime messages to the
-                      channels
+                      Add a channel to start chatting. You can also create a personal chat.
                     </p>
                   </div>
                 </Route>

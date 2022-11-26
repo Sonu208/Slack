@@ -7,6 +7,7 @@ import db from "../../firebase";
 import Message from "../Message/Message";
 import ChatInput from "./ChatInput/ChatInput";
 import CloseIcon from '@mui/icons-material/Close';
+import { Button } from "@mui/material";
 
 function Chat() {
   const { roomId } = useParams();
@@ -46,10 +47,21 @@ function Chat() {
             {/* <button onClick={() => setOpenDetails(false)}>X</button> */}
           </div>
           <div className="chat__detailsBody">
-            <p>Created by: {roomDetails?.createdBy}</p>
-            <p>Created at: {roomDetails?.createdAt}</p>
-            <p>Room name: {roomDetails?.name}</p>
-            <p>Room description:</p>
+            <br></br>
+            <h2>#{roomDetails?.name}</h2>
+            <h3>Channel description</h3>
+            <br></br>
+            <p>Created by {roomDetails?.createdBy} at {roomDetails?.createdAt}</p>
+            <br></br>
+            <br></br>
+            <div className="participantsHeader">
+              <h3>Participants</h3>
+              <Button variant="contained" size="small">Invite</Button>
+            </div>
+            <div className="participants">
+
+            </div>
+
           </div>
         </div>
       ):(

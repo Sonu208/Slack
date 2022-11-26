@@ -1,7 +1,9 @@
 .sidebar{
     background-color: var(--digiHQ-color2);
     border-top: 1px solid #49274b;
+    min-width: 160px;
     max-width: 260px;
+    /* width: 25%; */
     color: white;
     flex: 0.3;
     overflow-y: auto;

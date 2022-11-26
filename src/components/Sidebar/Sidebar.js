@@ -13,6 +13,7 @@ import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import AddIcon from "@material-ui/icons/Add";
 import { Button } from "@mui/material";
+import ChatIcon from '@mui/icons-material/Chat';
 // import InsertCommentIcon from "@material-ui/icons/InsertComment";
 // import ClearIcon from '@mui/icons-material/Clear';
 // import LoopIcon from "@material-ui/icons/Loop";
@@ -20,15 +21,19 @@ import db from "../../firebase";
 import { useStateValue } from "../../StateProvider";
 import { SelectWorkspace } from "./Workspace/selectWorkspace";
 import { CreateWorkspace } from "./Workspace/createWorkspace";
+import axios from 'axios';
+
 
 function Sidebar() {
   const [channels, setChannels] = useState([]);
   const [{ user }] = useStateValue();
-
+  const [workspace,setWorkspace] = useState([]);
   const [showChannels, setShowChannels] = useState(false);
+  const [showChats, setShowChats] = useState(false);
   const [showmore, setShowmore] = useState(false);
   const [selectWorkspace, setSelectWorkspace] = useState(false);
   const [createWorkspace, setCreateWorkspace] = useState(false);
+  
 
   const handleSelectWorkspace = (bool) => {
     setSelectWorkspace(bool);
@@ -37,8 +42,60 @@ function Sidebar() {
   const handleCreateWorkspace = (bool) => {
     setCreateWorkspace(bool);
   };
+  useEffect(() => {
+    
+
+    console.log(localStorage.getItem('login'));
+    const userId = localStorage.getItem('login').id;
+
+      axios({
+            method: 'get',
+            url: `https://slack-clone2022.herokuapp.com/workspace/user/${userId}`,
+    
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+            .then((res) => {
+              console.log(res);
+              if (res.status === 200) {
+                console.log("Workspaces received", res.data);
+                setWorkspace(res.data);
+                // setcreateworkspace(false);
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } 
+    , [])
 
   useEffect(() => {
+
+    axios({
+      method: 'get',
+      url: 'https://slack-clone2022.herokuapp.com/user/',
+
+      data: {
+        
+      },
+
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          console.log('Signed Up Successfully !');
+          alert('Signed Up Successfully !');
+          
+        }
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+
     db.collection("rooms").onSnapshot((snapshot) => {
       setChannels(
         snapshot.docs.map((doc) => ({
@@ -54,7 +111,12 @@ function Sidebar() {
       <div className="siderbar-header">
         <div className="sidebar-info">
           <div>
-            <h2>Workflow name</h2>
+            {workspace[0]?(
+              <h2>{workspace[0].name}</h2>
+            ):(
+
+              <h2>Workflow name</h2>
+            )}
          
           </div>
           <h3>
@@ -86,9 +148,11 @@ function Sidebar() {
           {/* <SidebarOption Icon={InsertCommentIcon} title="Threads" /> */}
           <SidebarOption Icon={InboxIcon} title="Metions & reactions" />
           {/* <SidebarOption Icon={DraftsIcon} title="Saved items" /> */}
-          <SidebarOption Icon={BookmarkBorderIcon} title="Channel browser" />
+          {/* <SidebarOption Icon={ChatIcon} title="Chats" /> */}
           {/* <SidebarOption Icon={FileCopyIcon} title="File browser" /> */}
           <SidebarOption Icon={PeopleAltIcon} title="People & user groups" />
+          <SidebarOption Icon={AddIcon} addChannelOption title="Add Channel" />
+          <SidebarOption Icon={AddIcon} addChannelOption title="Add Chat" />
           {/* <SidebarOption Icon={AppsIcon} title="Apps" /> */}
           <div
             onClick={()=>{
@@ -113,20 +177,45 @@ function Sidebar() {
       ):(
         <div
             onClick={()=>{
-              setShowChannels(true)
+              setShowChannels(true);
+              setShowChats(false);
+              
             }} 
           >
             <SidebarOption Icon={ExpandMoreIcon} title="Channels" />
           </div>
       )}
       <hr />
-      <SidebarOption Icon={AddIcon} addChannelOption title="Add Channel" />
+      {showChats ? (
+        <div
+        onClick={()=>{
+          setShowChats(false)
+        }} 
+      >
+        <SidebarOption Icon={ExpandLessIcon} title="Chats" />
+      </div>
+      ):(
+        <div
+            onClick={()=>{
+              setShowChats(true);
+              setShowChannels(false);
+            }} 
+          >
+            <SidebarOption Icon={ExpandMoreIcon} title="Chats" />
+          </div>
+      )}
+      <hr />
+      
 
       {/* Connect to db and list all the channels*/}
       {/* SidebarOptionn */}
       {showChannels && channels.map((channel) => (
         <SidebarOption title={channel.name} id={channel.id} />
       ))}
+
+      {/* {showChats && channels.map((channel) => (
+        <SidebarOption title={channel.name} id={channel.id} />
+      ))} */}
     </div>
   );
 }
