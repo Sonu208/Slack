@@ -13,6 +13,8 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "bootstrap": "^5.2.3",
+    "emoji-mart": "^5.3.3",
+    "emojis-list": "^3.0.0",
     "firebase": "^8.7.1",
     "mdb-ui-kit": "^6.0.1",
     "react": "^17.0.2",

@@ -1,19 +1,17 @@
-import firebase from "firebase";
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/database';
+import 'firebase/storage';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCc0rclpltLUOqHkgql_mJcKHpCG3nRF5E",
-  authDomain: "slack-clone-v1.firebaseapp.com",
-  projectId: "slack-clone-v1",
-  storageBucket: "slack-clone-v1.appspot.com",
-  messagingSenderId: "963564600839",
-  appId: "1:963564600839:web:297624d8a499d2345cb4a2",
-  measurementId: "G-YFRHZFTWGH",
+var firebaseConfig = {
+  apiKey: 'AIzaSyDa4ly_9XEMZmqNdKaD1O7DziBpLca-VEM',
+  authDomain: 'slack-chat-app-clone.firebaseapp.com',
+  databaseURL: 'https://slack-chat-app-clone.firebaseio.com',
+  projectId: 'slack-chat-app-clone',
+  storageBucket: 'slack-chat-app-clone.appspot.com',
+  messagingSenderId: '827039025989',
+  appId: '1:827039025989:web:a0acf099d3cc844cb48c2c'
 };
+firebase.initializeApp(firebaseConfig);
 
-const firebaseApp = firebase.initializeApp(firebaseConfig);
-const db = firebaseApp.firestore();
-const auth = firebase.auth();
-const provider = new firebase.auth.GoogleAuthProvider();
-
-export { auth, provider };
-export default db;
+export default firebase;

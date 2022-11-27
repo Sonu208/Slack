@@ -1,5 +1,7 @@
 import React from 'react';
 import firebase from '../../firebase';
+import logo2 from "../../static/image/logo2.png";
+
 import {
   Grid,
   Form,
@@ -7,7 +9,7 @@ import {
   Button,
   Header,
   Message,
-  Icon
+  // Icon
 } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
@@ -61,10 +63,12 @@ class Login extends React.Component {
 
     return (
       <Grid textAlign='center' verticalAlign='middle' className='app'>
-        <Grid.Column style={{ maxWidth: 450 }}>
+        <Grid.Column style={{ maxWidth: 600 }}>
           <Header as='h1' icon color='violet' textAlign='center'>
-            <Icon name='code branch' color='violet' />
-            Login to DevChat
+            {/* <Icon name='code branch' color='violet' /> */}
+            <img className="logo"  src={logo2} alt="dd" />
+
+            DigiHQ
           </Header>
           <Form onSubmit={this.handleSubmit} size='large'>
             <Segment stacked>
